@@ -11,15 +11,11 @@ def is_prime(n):
     >>> is_prime(8)
     False
     """
-    z = 0
-    for i in n:
-        if n % i == 0 :
-            z +=1
-    if z == 2 :
-        tf = 1
-    else:
-        tf = 0
-    return tf
+    for i in range(2, n):
+        if (n % i == 0):
+            return False
+
+    return True
 
 
 def gcd(a, b):
@@ -48,8 +44,26 @@ def multiplicative_inverse(e, phi):
     >>> multiplicative_inverse(7, 40)
     23
     """
-    # PUT YOUR CODE HERE
-    pass
+    a = e
+    b = phi
+    quotients = []
+
+    while (a % b != 0):
+        c = a % b
+        quotients.append(a // b)
+        a = b
+        b = c
+
+    quotients.append(a // b)
+
+    x = 0
+    y = 1
+    for i in range(len(quotients) - 2, -1, -1):
+        c = x
+        x = y
+        y = c - (y * quotients[i])
+
+    return x % phi
 
 
 def generate_keypair(p, q):
@@ -57,23 +71,13 @@ def generate_keypair(p, q):
         raise ValueError('Both numbers must be prime.')
     elif p == q:
         raise ValueError('p and q cannot be equal')
-
-    # n = pq
-    # PUT YOUR CODE HERE
-
-    # phi = (p-1)(q-1)
-    # PUT YOUR CODE HERE
-
-    # Choose an integer e such that e and phi(n) are coprime
+    n = p * q
+    phi = (p - 1) * (q - 1)
     e = random.randrange(1, phi)
-
-    # Use Euclid's Algorithm to verify that e and phi(n) are comprime
     g = gcd(e, phi)
     while g != 1:
         e = random.randrange(1, phi)
         g = gcd(e, phi)
-
-    # Use Extended Euclid's Algorithm to generate the private key
     d = multiplicative_inverse(e, phi)
 
     # Return public and private keypair
